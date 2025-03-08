@@ -10,7 +10,7 @@ interface LocationScreenProps {
   setScreen: (screen: string) => void;
 }
 
-const LocationScreen: React.FC<LocationScreenProps> = ({ setScreen }) => {
+const PatientLocationScreen: React.FC<LocationScreenProps> = ({ setScreen }) => {
   const { location } = useContext(LocationContext);
   const { homeSet, homeLocation, setHomeSet, setHomeLocation } = useContext(HomeContext);
 
@@ -94,6 +94,7 @@ const LocationScreen: React.FC<LocationScreenProps> = ({ setScreen }) => {
         {homeSet && outsideHome && (
           <Text style={styles.warningText}>OLET KODIN ULKOPUOLELLA!</Text>
         )}
+        <Text>PATIENT LOCATION</Text>
         <Text style={styles.ScreenText}>Latitude: {location.latitude.toFixed(6)}</Text>
         <Text style={styles.ScreenText}>Longitude: {location.longitude.toFixed(6)}</Text>
       </View>
@@ -109,4 +110,4 @@ const LocationScreen: React.FC<LocationScreenProps> = ({ setScreen }) => {
   );
 };
 
-export default LocationScreen;
+export default PatientLocationScreen;

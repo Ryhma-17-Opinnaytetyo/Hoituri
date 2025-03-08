@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { SafeAreaView, StatusBar, View, TouchableOpacity, Text } from "react-native";
-import HomeScreen from "./screens/HomeScreen"; // For patients
+import PatientHomeScreen from "./screens/PatientHomeScreen"; // For patients
 import CaretakerHomeScreen from "./screens/CaretakerHomeScreen";
-import LocationScreen from "./screens/LocationScreen"; // For patients
+import PatientLocationScreen from "./screens/PatientLocationScreen"; // For patients
 import CaretakerLocationScreen from "./screens/CaretakerLocationScreen"; // For caretakers
 import LoginScreen from "./screens/LoginScreen";
 import LocationTracker from "./components/LocationTracker";
@@ -63,7 +63,7 @@ const App = () => {
               }}
               style={[
                 styles.backButton,
-                { display: (screen === "LocationScreen" || screen === "CaretakerLocationScreen") ? "flex" : "none" }
+                { display: (screen === "PatientLocationScreen" || screen === "CaretakerLocationScreen") ? "flex" : "none" }
               ]}
             >
               <Text style={styles.navText}>← Aloitus</Text>
@@ -74,7 +74,7 @@ const App = () => {
                 ? "Aloitus (patient)"
                 : screen === "CaretakerHome"
                 ? "Aloitus (caretaker)"
-                : screen === "LocationScreen"
+                : screen === "PatientLocationScreen"
                 ? "Sijainti (patient)"
                 : screen === "CaretakerLocationScreen"
                 ? "Sijainti (caretaker)"
@@ -88,7 +88,7 @@ const App = () => {
                 if (role === "caretaker") {
                   setScreen("CaretakerLocationScreen");
                 } else {
-                  setScreen("LocationScreen");
+                  setScreen("PatientLocationScreen");
                 }
               }}
               style={[
@@ -102,9 +102,9 @@ const App = () => {
 
           {/* Main content area */}
           <View style={styles.screenContent}>
-            {screen === "Home" && <HomeScreen setScreen={setScreen} />}
+            {screen === "Home" && <PatientHomeScreen setScreen={setScreen} />}
             {screen === "CaretakerHome" && <CaretakerHomeScreen setScreen={setScreen} />}
-            {screen === "LocationScreen" && <LocationScreen setScreen={setScreen} />}
+            {screen === "PatientLocationScreen" && <PatientLocationScreen setScreen={setScreen} />}
             {screen === "CaretakerLocationScreen" && <CaretakerLocationScreen setScreen={setScreen} />}
           </View>
         </SafeAreaView>

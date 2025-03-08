@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../styles";
 
@@ -9,8 +9,8 @@ interface HomeScreenProps {
 
 const CaretakerHomeScreen: React.FC<HomeScreenProps> = ({ setScreen }) => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [emergencyPressed, setEmergencyPressed] = useState(false);
   const [caretakerName, setCaretakerName] = useState("");
+  const [patientName, setPatientName] = useState("");
 
   useEffect(() => {
     // Update time every second
@@ -18,20 +18,32 @@ const CaretakerHomeScreen: React.FC<HomeScreenProps> = ({ setScreen }) => {
       setCurrentDateTime(new Date());
     }, 1000);
     
-    // Retrieve the caretaker's name from AsyncStorage
-    const loadUserName = async () => {
+    const loadUserData = async () => {
       try {
         const storedName = await AsyncStorage.getItem("userName");
         if (storedName) {
           setCaretakerName(storedName);
         }
+        // Load the patients data from AsyncStorage
+        const storedPatients = await AsyncStorage.getItem("patients");
+        console.log("Stored patients:", storedPatients);
+        if (storedPatients) {
+          const patients = JSON.parse(storedPatients);
+          console.log("Parsed patients:", patients);
+          // Assuming patients is an array of objects with either a "name" or "userName" property
+          if (patients.length > 0) {
+            const names = patients
+              .map((patient: any) => patient.userName || patient.name)
+              .join(", ");
+            setPatientName(names);
+          }
+        }
       } catch (error) {
-        console.error("Error loading user name", error);
+        console.error("Error loading user data", error);
       }
     };
 
-    loadUserName();
-
+    loadUserData();
     return () => clearInterval(intervalId);
   }, []);
 
@@ -44,6 +56,7 @@ const CaretakerHomeScreen: React.FC<HomeScreenProps> = ({ setScreen }) => {
       {/* Top section with real-time information */}
       <View style={{ alignItems: "center", marginBottom: 20 }}>
         <Text style={styles.ScreenText}>Käyttäjä: {caretakerName}</Text>
+        <Text style={styles.ScreenText}>Potilas: {patientName}</Text>
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>Tänään on {weekday}</Text>
         <Text style={{ fontSize: 16 }}>{date}</Text>
         <Text style={{ fontSize: 16 }}>{time}</Text>

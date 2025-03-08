@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import styles from "../styles";
-import { loginUser } from "../services/apiMobile.js";
+import { loginUser, getPatients } from "../services/apiMobile.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface LoginScreenProps {
@@ -34,8 +34,18 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ setScreen }) => {
       await AsyncStorage.setItem("userRole", userData.role);
 
       if (userData.role === "caretaker") {
+        if (userData.relationships && userData.relationships.patientIds) {
+          const caretakerPatientIds = userData.relationships.patientIds; // Array of patient IDs for this caretaker
+          const allPatients = await getPatients(userData.id);
+          // Filter to only include patients that are in the caretaker's patientIds list
+          const filteredPatients = allPatients.filter((patient: any) =>
+            caretakerPatientIds.includes(patient.id)
+          );
+          await AsyncStorage.setItem("patients", JSON.stringify(filteredPatients));
+          console.log("Patient Info:", filteredPatients);
+        }
         setScreen("CaretakerHome");
-        console.log("caretaker")
+        console.log("caretaker");
       } else if (userData.role === "patient") {
         setScreen("Home");
         console.log("patient")

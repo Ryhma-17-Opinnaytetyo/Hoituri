@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import styles from "../styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface HomeScreenProps {
   setScreen: (screen: string) => void;
@@ -25,9 +26,10 @@ const reminders = [
   { day: "Keskiviikko", medicine: "Oranssi pilleri", dosage: 2, time: "18:00" },
 ];
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ setScreen }) => {
+const PatientHomeScreen: React.FC<HomeScreenProps> = ({ setScreen }) => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [emergencyPressed, setEmergencyPressed] = useState(false);
+  const [patientName, setPatientName] = useState("");
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -42,7 +44,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ setScreen }) => {
   const date = currentDateTime.toLocaleDateString("fi-FI", { day: "numeric", month: "long", year: "numeric" });
   const time = currentDateTime.toLocaleTimeString("fi-FI");
 
-  const patientName = "Matti Meikäläinen"; // Asiakkaan nimi
+  const loadUserName = async () => {
+    try {
+      const storedName = await AsyncStorage.getItem("userName");
+      if (storedName) {
+        setPatientName(storedName);
+      }
+    } catch (error) {
+      console.error("Error loading user name", error);
+    }
+  };
+
+  loadUserName();
 
   // Määritellään viikonpäivien järjestys
   const daysOrder: { [key: string]: number } = {
@@ -134,4 +147,4 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ setScreen }) => {
   );
 };
 
-export default HomeScreen;
+export default PatientHomeScreen;
